@@ -59,6 +59,7 @@ THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #include <stdio.h>
 #include <X11/Xfuncproto.h>
 #include <X11/extensions/XKB.h>
+#include <X11/extensions/XKBhurd-console.h>
 
 #ifndef X_PROTOCOL
 typedef unsigned char KeyCode;
@@ -180,6 +181,14 @@ struct xkb_pointer_button_action {
     uint8_t	button;
 };
 
+struct xkb_consscroll_action {
+    uint8_t type;
+    int flags;
+    double screen;
+    int line;
+    int percent;
+};
+
 union xkb_action {
     struct xkb_any_action             any;
     struct xkb_mod_action             mods;
@@ -190,6 +199,7 @@ union xkb_action {
     struct xkb_device_valuator_action devval;
     struct xkb_pointer_default_action dflt;
     struct xkb_switch_screen_action   screen;
+    struct xkb_consscroll_action      consscroll;
     struct xkb_redirect_key_action    redirect; /* XXX wholly unnecessary? */
     struct xkb_pointer_action         ptr; /* XXX delete for DeviceValuator */
     struct xkb_pointer_button_action  btn; /* XXX delete for DeviceBtn */

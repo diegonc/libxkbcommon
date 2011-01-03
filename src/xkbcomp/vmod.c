@@ -34,6 +34,7 @@
 #include "misc.h"
 
 #include <X11/extensions/XKB.h>
+#include <X11/extensions/XKBhurd-console.h>
 
 #include "vmod.h"
 

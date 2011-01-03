@@ -31,6 +31,7 @@ THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #include "X11/extensions/XKBcommon.h"
 #include "XKBcommonint.h"
 #include <X11/extensions/XKB.h>
+#include <X11/extensions/XKBhurd-console.h>
 
 int
 XkbcAllocCompatMap(struct xkb_desc * xkb, unsigned which, unsigned nSI)

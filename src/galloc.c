@@ -30,6 +30,7 @@ THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #include "X11/extensions/XKBcommon.h"
 #include "XKBcommonint.h"
 #include <X11/extensions/XKB.h>
+#include <X11/extensions/XKBhurd-console.h>
 
 static void
 _XkbFreeGeomLeafElems(Bool freeAll, int first, int count,

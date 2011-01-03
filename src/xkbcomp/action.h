@@ -50,7 +50,9 @@
 #define	F_Device	20
 #define	F_Keycode	21
 #define	F_ModsToClear	22
-#define	F_LastField	F_ModsToClear
+#define F_Line		23
+#define F_Percent	24
+#define	F_LastField	F_Percent
 #define	F_NumFields	(F_LastField+1)
 
 #define	PrivateAction	(XkbSA_LastAction+1)

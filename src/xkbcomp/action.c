@@ -129,6 +129,8 @@ stringToAction(const char *str, unsigned *type_rtrn)
         *type_rtrn = XkbSA_DeviceValuator;
     else if (uStrCaseCmp(str, "private") == 0)
         *type_rtrn = PrivateAction;
+    else if (uStrCaseCmp(str, "consscroll") == 0)
+        *type_rtrn = XkbSA_ConsScroll;
     else
         return False;
     return True;
@@ -207,6 +209,10 @@ stringToField(char *str, unsigned *field_rtrn)
         *field_rtrn = F_ModsToClear;
     else if (uStrCaseCmp(str, "clearmodifiers") == 0)
         *field_rtrn = F_ModsToClear;
+    else if (uStrCaseCmp(str, "line") == 0)
+        *field_rtrn = F_Line;
+    else if (uStrCaseCmp(str, "percent") == 0)
+        *field_rtrn = F_Percent;
     else
         return False;
     return True;
@@ -287,6 +293,12 @@ fieldText(unsigned field)
         break;
     case F_ModsToClear:
         strcpy(buf, "clearmods");
+        break;
+    case F_Line:
+        strcpy(buf, "line");
+        break;
+    case F_Percent:
+        strcpy(buf, "percent");
         break;
     default:
         strcpy(buf, "unknown");
@@ -882,6 +894,95 @@ HandleSwitchScreen(struct xkb_desc * xkb,
     return ReportIllegal(action->type, field);
 }
 
+static Bool
+HandleConsScroll(struct xkb_desc * xkb,
+                 struct xkb_any_action * action,
+                 unsigned field, ExprDef * array_ndx, ExprDef * value)
+{
+    ExprResult rtrn;
+    struct xkb_consscroll_action *act;
+
+    act = (struct xkb_consscroll_action *) action;
+    if (field == F_Screen)
+    {
+        ExprDef *scrn;
+        if (array_ndx != NULL)
+            return ReportActionNotArray(action->type, field);
+        if ((value->op == OpNegate) || (value->op == OpUnaryPlus))
+        {
+            act->flags &= ~XkbSA_ScreenAbsolute;
+            scrn = value->value.child;
+        }
+        else
+        {
+            act->flags |= XkbSA_ScreenAbsolute;
+            scrn = value;
+        }
+
+        if (!ExprResolveFloat(scrn, &rtrn, NULL, NULL))
+            return ReportMismatch(action->type, field, "float");
+        if (rtrn.ival < 0)
+        {
+            ERROR("Screen number must be greater than zero.\n");
+            ACTION("Illegal screen value %d ignored\n", rtrn.ival);
+            return False;
+        }
+        if (value->op == OpNegate)
+            act->screen = -(float)(rtrn.ival / XkbGeomPtsPerMM);
+        else
+            act->screen = (float)(rtrn.ival / XkbGeomPtsPerMM);
+        return True;
+    }
+    else if (field == F_Line)
+    {
+        ExprDef *scrn;
+        if (array_ndx != NULL)
+            return ReportActionNotArray(action->type, field);
+        if ((value->op == OpNegate) || (value->op == OpUnaryPlus))
+        {
+            act->flags &= ~XkbSA_LineAbsolute;
+            scrn = value->value.child;
+        }
+        else
+        {
+            act->flags |= XkbSA_LineAbsolute;
+            scrn = value;
+        }
+
+        if (!ExprResolveInteger(scrn, &rtrn, NULL, NULL))
+            return ReportMismatch(action->type, field, "integer");
+        if (rtrn.ival < 0)
+        {
+            ERROR("Line number must be greater than zero.\n");
+            ACTION("Illegal line number value %d ignored\n", rtrn.ival);
+            return False;
+        }
+        if (value->op == OpNegate)
+            act->screen = - rtrn.ival;
+        else
+            act->screen = rtrn.ival;
+        return True;
+    }
+    else if (field == F_Percent)
+    {
+        if (array_ndx != NULL)
+            return ReportActionNotArray(action->type, field);
+
+        if (!ExprResolveInteger(value, &rtrn, NULL, NULL))
+            return ReportMismatch(action->type, field, "integer");
+        if ((rtrn.ival < 0) && (rtrn.ival > 100))
+        {
+            ERROR("Percentage must be between 0 and 100.\n");
+            ACTION("Illegal percentage value %d ignored\n", rtrn.ival);
+            return False;
+        }
+        act->screen = rtrn.ival;
+        act->flags |= XkbSA_UsePercent;
+        return True;
+    }
+    return ReportIllegal(action->type, field);
+}
+
 LookupEntry ctrlNames[] = {
     {"repeatkeys", XkbRepeatKeysMask}
     ,
@@ -1265,6 +1366,7 @@ static actionHandler handleAction[XkbSA_NumActions + 1] = {
     HandleDeviceBtn /* DeviceBtn    */ ,
     HandleDeviceBtn /* LockDeviceBtn */ ,
     HandleDeviceValuator /* DeviceValuatr */ ,
+    HandleConsScroll /* ConsScroll */,
     HandlePrivate               /* Private      */
 };
 
