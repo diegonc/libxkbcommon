@@ -211,7 +211,7 @@ stringToField(char *str, unsigned *field_rtrn)
         *field_rtrn = F_ModsToClear;
     else if (uStrCaseCmp(str, "line") == 0)
         *field_rtrn = F_Line;
-    else if (uStrCaseCmp(str, "percent") == 0)
+    else if (uStrCaseCmp(str, "percentage") == 0)
         *field_rtrn = F_Percent;
     else
         return False;
@@ -298,7 +298,7 @@ fieldText(unsigned field)
         strcpy(buf, "line");
         break;
     case F_Percent:
-        strcpy(buf, "percent");
+        strcpy(buf, "percentage");
         break;
     default:
         strcpy(buf, "unknown");
