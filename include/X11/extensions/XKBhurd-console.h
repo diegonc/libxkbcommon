@@ -23,4 +23,6 @@
 #define XkbSA_LineAbsolute      2
 #define XkbSA_UsePercent        8
 
+#define XkbKeyRepeat(d,k)       ((d)->ctrls->per_key_repeat[(k) / 8] & (1 << ((k) % 8)))
+
 #endif
