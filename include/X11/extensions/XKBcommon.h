@@ -840,6 +840,15 @@ xkb_keysym_to_string(uint32_t ks, char *buffer, size_t size);
 _X_EXPORT extern uint32_t
 xkb_string_to_keysym(const char *s);
 
+/*
+ * Converts a keysym to a unicode character.
+ *
+ * This is uint32_t rather than KeySym, as KeySym changes size between
+ * client and server (no, really).
+ */
+_X_EXPORT extern uint32_t
+xkb_keysym_to_ucs4 (uint32_t ks);
+
 _XFUNCPROTOEND
 
 #endif /* _XKBCOMMON_H_ */

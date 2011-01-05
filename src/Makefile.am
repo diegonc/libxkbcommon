@@ -12,6 +12,7 @@ libxkbcommon_la_SOURCES = \
 	atom.c \
 	galloc.c \
 	geom.c \
+	imKStoUCS.c \
 	keysym.c \
 	malloc.c \
 	maprules.c \
