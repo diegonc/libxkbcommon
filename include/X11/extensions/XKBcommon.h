@@ -85,9 +85,17 @@ struct xkb_rule_names {
     const char *  options;
 };
 
+struct xkb_consscroll_action {
+    uint8_t type;
+    int flags;
+    double screen;
+    int line;
+    int percent;
+};
+
 struct xkb_any_action {
     uint8_t   type;
-    uint8_t   data[7];
+    uint8_t   data[sizeof (struct xkb_consscroll_action) - sizeof (uint8_t)];
 };
 
 struct xkb_mod_action {
@@ -179,14 +187,6 @@ struct xkb_pointer_button_action {
     uint8_t	flags;
     uint8_t	count;
     uint8_t	button;
-};
-
-struct xkb_consscroll_action {
-    uint8_t type;
-    int flags;
-    double screen;
-    int line;
-    int percent;
 };
 
 union xkb_action {
