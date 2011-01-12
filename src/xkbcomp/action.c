@@ -928,9 +928,9 @@ HandleConsScroll(struct xkb_desc * xkb,
             return False;
         }
         if (value->op == OpNegate)
-            act->screen = -(float)(rtrn.ival / XkbGeomPtsPerMM);
+            act->screen = -((float) rtrn.ival / XkbGeomPtsPerMM);
         else
-            act->screen = (float)(rtrn.ival / XkbGeomPtsPerMM);
+            act->screen = ((float) rtrn.ival / XkbGeomPtsPerMM);
         return True;
     }
     else if (field == F_Line)
